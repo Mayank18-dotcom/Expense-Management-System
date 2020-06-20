@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Expenses</title>
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" href="style3.css">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <style>
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 1000px;
+        }
+        
+        td, th {
+          border: 2px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+    </style>
+</head>
+
+<body style="background-color: #fafafa;">
+
+    <div class="wrapper">
+        <div id="content">
+        <div class="card" style="width: 92rem; min-height: 42rem;margin-left: 30px;margin-top: 25px;margin-bottom: 30px;">
+            <div style="text-align: center;">
+                <h1 style="color: deepskyblue;font-size: 50px;margin-top: 10px;">My Expense Book</h1>
+                <br>
+            </div>
+            <div style="margin-left: 250px;">
+                    <table>
+                        <tr>
+                            <th>Date</th>
+                            <th>Expense for</th>
+                            <th>Amount</th>
+                            <th>Edit  /  Delete</th>
+                          </tr>
+                          <% users.forEach(function(user){ %>
+                          <tr id="row1">
+                            <td id="date_row1"><%= user.date %></td>
+                            <td id="name_row1"><%= user.name %></td>
+                            <td id="name_amount1"><%= user.amount %></td>
+                            <td>
+                                <a class="btn btn-raised btn-warning" id="edit_button1" value="Edit" class="edit" href="/expenses/edit/<%= user._id %>">Edit</a>
+                                <a class="btn btn-raised btn-danger" href="/expenses/delete/<%= user._id %>">Delete</a>
+                                </td>
+                          </tr>
+                          <% }) %> 
+                          <tr>
+                            <form action= "/addnewexpense" method="POST" > 
+                                <td><input type="date" required name = "user[date]" id="new_date"></td>
+                                <td><input type="text" required name = "user[name]" id="new_name"></td>
+                                <td><input type="text" required name = "user[amount]" id="new_amount"></td>
+                                <td><button type="submit" class="btn btn1 btn-primary"><b>ADD</b></button></td>
+                            </form>
+                          </tr>
+                    </table>
+                    <br>
+                    <a href="/dates" class="btn btn-secondary">Back to dates</a>
+            </div>
+            
+        </div>    
+      </div>
+    </div>
+    <script>
+        function edit_row(no)
+        {
+            document.getElementById("edit_button"+no).style.display="none";
+            document.getElementById("save_button"+no).style.display="block";
+                
+            var date=document.getElementById("date_row"+no);
+            var name=document.getElementById("name_row"+no);
+            var amount=document.getElementById("amount_row"+no);
+                
+            var date_data=date.innerHTML;
+            var name_data=name.innerHTML;
+            var amount_data=amount.innerHTML;
+                
+            date.innerHTML="<input type='text' id='date_text"+no+"' value='"+date_data+"'>";
+            name.innerHTML="<input type='text' id='name_text"+no+"' value='"+name_data+"'>";
+            amount.innerHTML="<input type='text' id='amount_text"+no+"' value='"+amount_data+"'>";
+        }
+
+        function save_row(no)
+        {
+            var date_val=document.getElementById("date_text"+no).value;
+            var name_val=document.getElementById("name_text"+no).value;
+            var amount_val=document.getElementById("amount_text"+no).value;
+
+            document.getElementById("date_row"+no).innerHTML=date_val;
+            document.getElementById("name_row"+no).innerHTML=name_val;
+            document.getElementById("amount_row"+no).innerHTML=amount_val;
+
+            document.getElementById("edit_button"+no).style.display="block";
+            document.getElementById("save_button"+no).style.display="none";
+        }
+        function delete_row(no)
+        {
+        document.getElementById("row"+no+"").outerHTML="";
+        }
+
+        function add_row()
+        {
+        var new_name=document.getElementById("new_name").value;
+        var new_country=document.getElementById("new_country").value;
+        var new_age=document.getElementById("new_age").value;
+            
+        var table=document.getElementById("data_table");
+        var table_len=(table.rows.length)-1;
+        var row = table.insertRow(table_len).outerHTML="<tr id='row"+table_len+"'><td id='name_row"+table_len+"'>"+new_name+"</td><td id='country_row"+table_len+"'>"+new_country+"</td><td id='age_row"+table_len+"'>"+new_age+"</td><td><input type='button' id='edit_button"+table_len+"' value='Edit' class='edit' onclick='edit_row("+table_len+")'> <input type='button' id='save_button"+table_len+"' value='Save' class='save' onclick='save_row("+table_len+")'> <input type='button' value='Delete' class='delete' onclick='delete_row("+table_len+")'></td></tr>";
+
+        document.getElementById("new_name").value="";
+        document.getElementById("new_country").value="";
+        document.getElementById("new_age").value="";
+        }
+    </script>
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <!-- jQuery Custom Scroller CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+</body>
+
+</html>
+
